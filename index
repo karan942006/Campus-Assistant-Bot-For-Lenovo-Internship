@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campus Assistant Bot</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --primary: #4f46e5;
+  --primary-dark: #3730a3;
+  --primary-light: #e0e7ff;
+  --accent: #06b6d4;
+  --bg: #f1f5f9;
+  --surface: #ffffff;
+  --surface2: #f8fafc;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --online: #22c55e;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.app-shell {
+  width: 100%;
+  max-width: 480px;
+  height: 92vh;
+  max-height: 820px;
+  background: var(--surface);
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+}
+
+/* ── Header ── */
+.header {
+  background: linear-gradient(135deg, var(--primary) 0%, #6366f1 100%);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.header-avatar {
+  width: 44px; height: 44px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.header-info { flex: 1; }
+.header-info h2 { color: #fff; font-size: 16px; font-weight: 600; }
+.header-info p { color: rgba(255,255,255,0.75); font-size: 12px; margin-top: 2px; }
+
+.status-dot {
+  width: 8px; height: 8px;
+  background: var(--online);
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; } 50% { opacity:0.4; }
+}
+
+.header-actions { display: flex; gap: 8px; }
+.header-btn {
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,0.15);
+  border: none; border-radius: 8px;
+  color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  transition: background .2s;
+}
+.header-btn:hover { background: rgba(255,255,255,0.25); }
+
+/* ── Sidebar / Info Panel ── */
+.info-panel {
+  position: absolute;
+  top: 0; right: -300px;
+  width: 280px; height: 100%;
+  background: var(--surface);
+  box-shadow: -4px 0 20px rgba(0,0,0,.1);
+  z-index: 100;
+  transition: right .3s ease;
+  overflow-y: auto;
+  padding: 20px 16px;
+}
+.info-panel.open { right: 0; }
+.info-panel h3 { font-size: 15px; color: var(--text); margin-bottom: 14px; font-weight: 600; }
+.info-card {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.info-card-title { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-muted); margin-bottom: 6px; }
+.info-card-body { font-size: 13px; color: var(--text); line-height: 1.5; }
+.close-panel {
+  float: right; background: none; border: none;
+  font-size: 18px; cursor: pointer; color: var(--text-muted);
+}
+
+/* ── Chat Area ── */
+.chat-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--bg);
+  scroll-behavior: smooth;
+}
+
+.chat-area::-webkit-scrollbar { width: 4px; }
+.chat-area::-webkit-scrollbar-track { background: transparent; }
+.chat-area::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+.msg-group { margin-bottom: 16px; }
+
+.msg-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.msg-row.user { flex-direction: row-reverse; }
+
+.bot-avatar {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+.bubble {
+  max-width: 78%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+.bubble.bot {
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 4px 18px 18px 18px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.bubble.user {
+  background: linear-gradient(135deg, var(--primary), #6366f1);
+  color: #fff;
+  border-radius: 18px 4px 18px 18px;
+}
+
+.msg-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  padding: 0 4px;
+}
+.msg-row.user .msg-time { text-align: right; }
+
+/* Typing indicator */
+.typing-indicator {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 0 4px;
+}
+.typing-indicator.visible { display: flex; }
+.typing-dots {
+  background: var(--surface);
+  padding: 10px 14px;
+  border-radius: 4px 18px 18px 18px;
+  display: flex; gap: 4px; align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.typing-dots span {
+  width: 6px; height: 6px;
+  background: #94a3b8;
+  border-radius: 50%;
+  animation: bounce .6s infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: .15s; }
+.typing-dots span:nth-child(3) { animation-delay: .3s; }
+@keyframes bounce {
+  0%,60%,100% { transform:translateY(0); }
+  30% { transform:translateY(-6px); }
+}
+
+/* ── Suggestions ── */
+.suggestions {
+  padding: 10px 14px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.suggestions::-webkit-scrollbar { display: none; }
+
+.suggestion-chip {
+  padding: 7px 13px;
+  background: var(--primary-light);
+  border: none;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--primary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+.suggestion-chip:hover {
+  background: var(--primary);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* ── Input Bar ── */
+.input-bar {
+  padding: 12px 14px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.attach-btn {
+  width: 38px; height: 38px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: all .2s;
+}
+.attach-btn:hover { background: var(--primary-light); color: var(--primary); }
+
+#userInput {
+  flex: 1;
+  min-height: 38px;
+  max-height: 100px;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+  background: var(--bg);
+  color: var(--text);
+  transition: border-color .2s;
+  overflow-y: auto;
+}
+#userInput:focus { border-color: var(--primary); background: #fff; }
+#userInput::placeholder { color: var(--text-muted); }
+
+.send-btn {
+  width: 38px; height: 38px;
+  background: var(--primary);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all .2s;
+}
+.send-btn:hover { background: var(--primary-dark); transform: scale(1.04); }
+.send-btn:active { transform: scale(0.96); }
+.send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* ── Rich bubble content ── */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+.info-item {
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+}
+.info-item .icon { font-size: 20px; margin-bottom: 4px; }
+.info-item .label { font-size: 11px; color: var(--text-muted); }
+.info-item .value { font-size: 13px; font-weight: 600; color: var(--text); margin-top: 2px; }
+
+.dept-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.dept-item {
+  display: flex; align-items: center; gap: 10px;
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--text);
+}
+.dept-item .dept-icon {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.event-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.event-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  border-left: 3px solid var(--primary);
+  padding-left: 10px;
+}
+.event-date { font-size: 11px; color: var(--primary); font-weight: 600; white-space: nowrap; }
+.event-name { font-size: 13px; color: var(--text); }
+
+.contact-card {
+  background: linear-gradient(135deg, #e0e7ff, #dbeafe);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 8px;
+}
+.contact-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 13px; }
+.contact-row:last-child { margin-bottom: 0; }
+.contact-row .icon { font-size: 16px; }
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.action-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 7px 14px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .2s;
+}
+.action-btn:hover { background: var(--primary-dark); }
+
+/* ── FAQ Accordion ── */
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+.faq-q {
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--surface2);
+  color: var(--text);
+}
+.faq-a {
+  display: none;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  background: #fff;
+}
+.faq-item.open .faq-a { display: block; }
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+.faq-arrow { font-size: 12px; transition: transform .2s; }
+
+/* ── Dark overlay for info panel ── */
+.overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.3);
+  z-index: 90;
+}
+.overlay.show { display: block; }
+
+/* ── Responsive wrapper ── */
+.wrapper { position: relative; width: 100%; max-width: 480px; height: 92vh; max-height: 820px; }
+
+/* Feedback thumbs */
+.msg-feedback {
+  display: flex; gap: 4px;
+  margin-top: 4px; padding-left: 4px;
+}
+.thumb-btn {
+  background: none; border: none;
+  font-size: 13px; cursor: pointer;
+  opacity: 0.4;
+  transition: opacity .2s, transform .2s;
+}
+.thumb-btn:hover { opacity: 1; transform: scale(1.2); }
+
+/* Character counter */
+.char-counter {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-align: right;
+  padding: 0 4px;
+}
+
+/* Welcome cards */
+.welcome-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+.welcome-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+  border-top: 3px solid transparent;
+}
+.welcome-card:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+.welcome-card .wc-icon { font-size: 24px; margin-bottom: 5px; }
+.welcome-card .wc-label { font-size: 12px; font-weight: 600; color: var(--text); }
+.welcome-card .wc-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="app-shell" id="appShell">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-avatar">🎓</div>
+      <div class="header-info">
+        <h2>Campus Assistant</h2>
+        <p><span class="status-dot"></span>Online · AI Powered</p>
+      </div>
+      <div class="header-actions">
+        <button class="header-btn" title="College Info" onclick="togglePanel()">ℹ️</button>
+        <button class="header-btn" title="Clear Chat" onclick="clearChat()">🗑️</button>
+      </div>
+    </div>
+
+    <!-- Info Panel -->
+    <div class="overlay" id="overlay" onclick="togglePanel()"></div>
+    <div class="info-panel" id="infoPanel">
+      <button class="close-panel" onclick="togglePanel()">✕</button>
+      <h3>College Information</h3>
+      <div class="info-card">
+        <div class="info-card-title">🏛️ About</div>
+        <div class="info-card-body">XYZ Engineering College<br>Est. 1985 · NAAC A+ Accredited<br>Affiliated to State University</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">🕒 Office Timings</div>
+        <div class="info-card-body">Mon – Sat: 8:00 AM – 5:00 PM<br>Sunday: Closed</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">📞 Key Contacts</div>
+        <div class="info-card-body">
+          Main Office: +91 9876543210<br>
+          Admissions: +91 9876543211<br>
+          Library: +91 9876543212<br>
+          Email: info@college.edu
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">📍 Location</div>
+        <div class="info-card-body">123 College Road, Tech Nagar<br>Mumbai, Maharashtra – 400001</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-title">🔗 Quick Links</div>
+        <div class="info-card-body" style="display:flex;flex-direction:column;gap:6px;margin-top:4px;">
+          <a href="#" style="color:var(--primary);font-size:13px;">📄 Student Portal</a>
+          <a href="#" style="color:var(--primary);font-size:13px;">📋 Exam Timetable</a>
+          <a href="#" style="color:var(--primary);font-size:13px;">📚 Library Catalog</a>
+          <a href="#" style="color:var(--primary);font-size:13px;">🏅 Results</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="chat-area" id="chatArea">
+      <!-- Messages will appear here -->
+    </div>
+
+    <!-- Typing Indicator -->
+    <div class="typing-indicator" id="typingIndicator">
+      <div style="width:30px;height:30px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">🎓</div>
+      <div class="typing-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- Quick Suggestions -->
+    <div class="suggestions" id="suggestionsBar">
+      <button class="suggestion-chip" onclick="quickAsk('college timings')">🕒 Timings</button>
+      <button class="suggestion-chip" onclick="quickAsk('departments')">🏫 Departments</button>
+      <button class="suggestion-chip" onclick="quickAsk('exam schedule')">📝 Exams</button>
+      <button class="suggestion-chip" onclick="quickAsk('library hours')">📚 Library</button>
+      <button class="suggestion-chip" onclick="quickAsk('contact info')">📞 Contact</button>
+      <button class="suggestion-chip" onclick="quickAsk('events and activities')">🎉 Events</button>
+      <button class="suggestion-chip" onclick="quickAsk('facilities')">🏟️ Facilities</button>
+      <button class="suggestion-chip" onclick="quickAsk('fee structure')">💰 Fees</button>
+      <button class="suggestion-chip" onclick="quickAsk('placement')">💼 Placements</button>
+    </div>
+
+    <!-- Input Bar -->
+    <div class="input-bar">
+      <button class="attach-btn" title="Attach file" onclick="showFAQ()">❓</button>
+      <textarea id="userInput" placeholder="Ask me anything about campus..." rows="1" maxlength="500"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const COLLEGE_CONTEXT = `You are an AI-powered Campus Assistant Bot for XYZ Engineering College, Mumbai. Be warm, helpful, and concise.
+
+College facts you know:
+- Name: XYZ Engineering College, Est. 1985, NAAC A+ Accredited
+- Location: 123 College Road, Tech Nagar, Mumbai, Maharashtra – 400001
+- College Timings: Monday–Saturday, 8:00 AM – 5:00 PM; Sunday Closed
+- Departments: Computer Engineering, Information Technology, Mechanical Engineering, Civil Engineering, Electronics & Telecommunication Engineering, First Year Engineering
+- Library: Open Mon–Sat, 9 AM – 6 PM. Has 50,000+ books, digital journals, e-library access, reading rooms
+- Exams: Mid-Semester in October, End-Semester in December (odd) / May (even). Results on student portal within 4 weeks.
+- Facilities: Canteen (8 AM – 7 PM), Gymnasium, Sports Ground, Wi-Fi Campus, Auditorium (1500 seats), Smart Classrooms, Research Labs, Hostel (boys & girls)
+- Admissions: Through state CET / JEE. Apply at www.college.edu. Deadline: July 31st each year.
+- Fee Structure: ₹80,000–₹1,20,000 per year depending on category. Scholarships available for merit & EBC.
+- Placements: Top recruiters include TCS, Infosys, Wipro, L&T, Bosch. Average package ₹4.5 LPA, Highest ₹18 LPA.
+- Student clubs: Coding Club, Robotics Club, Cultural Committee, NSS, Sports Committee
+- Events: Tech Fest (February), Cultural Fest (March), Sports Week (January)
+- Contact: Office +91 9876543210, Admissions +91 9876543211, Email: info@college.edu
+- Principal: Dr. Rajesh Sharma | Vice Principal: Dr. Priya Nair
+
+Keep responses under 120 words, be friendly, use relevant emojis sparingly, answer only college-related questions.
+If asked something off-topic, politely redirect to campus-related queries.`;
+
+let chatHistory = [];
+let isLoading = false;
+
+function getTime() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+document.getElementById('userInput').addEventListener('input', function() {
+  autoResize(this);
+});
+
+function appendMessage(role, htmlContent, showFeedback = false) {
+  const chatArea = document.getElementById('chatArea');
+  const isUser = role === 'user';
+  const time = getTime();
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'msg-group';
+
+  if (isUser) {
+    wrapper.innerHTML = `
+      <div class="msg-row user">
+        <div class="bubble user">${htmlContent}</div>
+      </div>
+      <div class="msg-row user"><div class="msg-time">${time}</div></div>
+    `;
+  } else {
+    wrapper.innerHTML = `
+      <div class="msg-row bot">
+        <div class="bot-avatar">🎓</div>
+        <div class="bubble bot">${htmlContent}</div>
+      </div>
+      <div class="msg-row bot" style="padding-left:38px">
+        <div class="msg-time">${time}</div>
+        ${showFeedback ? `<div class="msg-feedback"><button class="thumb-btn" title="Helpful" onclick="feedback(this,'up')">👍</button><button class="thumb-btn" title="Not helpful" onclick="feedback(this,'down')">👎</button></div>` : ''}
+      </div>
+    `;
+  }
+
+  chatArea.appendChild(wrapper);
+  chatArea.scrollTop = chatArea.scrollHeight;
+  return wrapper;
+}
+
+function feedback(btn, type) {
+  const group = btn.closest('.msg-feedback');
+  group.innerHTML = type === 'up'
+    ? '<span style="font-size:12px;color:var(--success)">✓ Thanks for the feedback!</span>'
+    : '<span style="font-size:12px;color:var(--text-muted)">Thanks, we\'ll improve!</span>';
+}
+
+function setTyping(show) {
+  const ti = document.getElementById('typingIndicator');
+  ti.className = 'typing-indicator' + (show ? ' visible' : '');
+  if (show) {
+    document.getElementById('chatArea').scrollTop = document.getElementById('chatArea').scrollHeight;
+  }
+}
+
+async function callClaudeAPI(userMessage) {
+
+  const msg = userMessage.toLowerCase();
+
+  if (msg.includes("timing") || msg.includes("college time")) {
+    return `🕒 College Timings
+
+Monday - Saturday
+8:00 AM to 5:00 PM
+
+Sunday: Closed`;
+  }
+
+  if (msg.includes("department") || msg.includes("branch")) {
+    return `🏫 Departments Available
+
+• Computer Engineering
+• Information Technology
+• Mechanical Engineering
+• Civil Engineering
+• Electronics & Telecommunication Engineering
+• First Year Engineering`;
+  }
+
+  if (msg.includes("library")) {
+    return `📚 Library Information
+
+Open: Monday - Saturday
+Time: 9:00 AM to 6:00 PM
+
+Facilities:
+• Reading Hall
+• E-Library
+• Digital Journals
+• 50,000+ Books`;
+  }
+
+  if (msg.includes("exam")) {
+    return `📝 Examination Information
+
+Mid-Sem Exams: October
+
+End-Sem Exams:
+December (Odd Semester)
+May (Even Semester)
+
+Results are declared within 4 weeks.`;
+  }
+
+  if (msg.includes("placement")) {
+    return `💼 Placement Information
+
+Top Recruiters:
+• TCS
+• Infosys
+• Wipro
+• Bosch
+• L&T
+
+Average Package:
+₹4.5 LPA
+
+Highest Package:
+₹18 LPA`;
+  }
+
+  if (msg.includes("fee")) {
+    return `💰 Fee Structure
+
+Annual Fees:
+₹80,000 - ₹1,20,000
+
+Scholarships Available:
+• Merit Scholarship
+• EBC Scholarship
+• Government Schemes`;
+  }
+
+  if (msg.includes("admission")) {
+    return `🎓 Admissions
+
+Eligibility:
+CET / JEE Scores
+
+Application Deadline:
+31 July
+
+For details contact admission office.`;
+  }
+
+  if (msg.includes("contact")) {
+    return `📞 Contact Information
+
+Office:
++91 9876543210
+
+Admissions:
++91 9876543211
+
+Email:
+info@college.edu`;
+  }
+
+  if (msg.includes("hostel")) {
+    return `🏠 Hostel Facilities
+
+• Separate Boys Hostel
+• Separate Girls Hostel
+• WiFi Available
+• Mess Facility
+• 24x7 Security`;
+  }
+
+  if (msg.includes("event") || msg.includes("festival")) {
+    return `🎉 Upcoming Events
+
+🏆 Sports Week - January
+
+💻 Tech Fest - February
+
+🎭 Cultural Fest - March
+
+🤖 Robotics Competition - April`;
+  }
+
+  if (msg.includes("principal")) {
+    return `👨‍🏫 Principal
+
+Dr. Rajesh Sharma
+
+Vice Principal:
+Dr. Priya Nair`;
+  }
+
+  if (msg.includes("facility")) {
+    return `🏢 Campus Facilities
+
+• Smart Classrooms
+• WiFi Campus
+• Library
+• Sports Ground
+• Gymnasium
+• Hostel
+• Research Labs
+• Auditorium`;
+  }
+
+  return `🤖 I couldn't understand your question.
+
+You can ask about:
+
+🕒 College Timings
+🏫 Departments
+📚 Library
+📝 Exams
+💼 Placements
+💰 Fees
+🎓 Admissions
+📞 Contact
+🏠 Hostel
+🎉 Events
+🏢 Facilities`;
+}
+
+function textToHtml(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+  input.value = '';
+  input.style.height = 'auto';
+
+  appendMessage('user', escapeHtml(text));
+
+  setTyping(true);
+
+  try {
+    const reply = await callClaudeAPI(text);
+    setTyping(false);
+    appendMessage('bot', textToHtml(reply), true);
+  } catch (err) {
+    setTyping(false);
+    appendMessage('bot', '⚠️ Sorry, I\'m having trouble connecting. Please check your internet or try again in a moment.', false);
+  }
+
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function quickAsk(text) {
+  document.getElementById('userInput').value = text;
+  sendMessage();
+}
+
+function togglePanel() {
+  document.getElementById('infoPanel').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+
+function clearChat() {
+  chatHistory = [];
+  document.getElementById('chatArea').innerHTML = '';
+  showWelcome();
+}
+
+function showFAQ() {
+  const faqHtml = `
+    <strong>Frequently Asked Questions</strong>
+    <div class="faq-item" style="margin-top:10px">
+      <div class="faq-q" onclick="toggleFaq(this)">📅 When do exams start? <span class="faq-arrow">▾</span></div>
+      <div class="faq-a">Mid-Sem exams are held in October and End-Sem in December (odd semester) or May (even semester). Timetables are published 3 weeks in advance on the student portal.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">💰 How do I pay fees? <span class="faq-arrow">▾</span></div>
+      <div class="faq-a">Fees can be paid online via the student portal (Net Banking / UPI) or at the college cash counter. Installments are available on request.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">🎓 How to apply for admission? <span class="faq-arrow">▾</span></div>
+      <div class="faq-a">Apply through the state CET counselling or visit www.college.edu for direct admissions. Deadline is July 31st. Merit-based scholarships available.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">📚 How to access e-library? <span class="faq-arrow">▾</span></div>
+      <div class="faq-a">Login at elibrary.college.edu using your student credentials. Access to 10,000+ e-books and journals available 24/7.</div>
+    </div>
+  `;
+  appendMessage('bot', faqHtml, false);
+}
+
+function toggleFaq(el) {
+  el.closest('.faq-item').classList.toggle('open');
+}
+
+function showWelcome() {
+  const welcomeHtml = `
+    <strong>👋 Hi there! I'm your Campus Assistant.</strong><br><br>
+    I can help you with admissions, exams, departments, library, events, placements, and more. What would you like to know?
+    <div class="welcome-cards">
+      <div class="welcome-card" onclick="quickAsk('What are the college timings?')">
+        <div class="wc-icon">🕒</div>
+        <div class="wc-label">Timings</div>
+        <div class="wc-desc">Office & library hours</div>
+      </div>
+      <div class="welcome-card" onclick="quickAsk('List all departments')">
+        <div class="wc-icon">🏫</div>
+        <div class="wc-label">Departments</div>
+        <div class="wc-desc">All branches offered</div>
+      </div>
+      <div class="welcome-card" onclick="quickAsk('Tell me about placements')">
+        <div class="wc-icon">💼</div>
+        <div class="wc-label">Placements</div>
+        <div class="wc-desc">Jobs & packages</div>
+      </div>
+      <div class="welcome-card" onclick="quickAsk('Upcoming events and activities')">
+        <div class="wc-icon">🎉</div>
+        <div class="wc-label">Events</div>
+        <div class="wc-desc">Fests & activities</div>
+      </div>
+    </div>
+  `;
+  appendMessage('bot', welcomeHtml, false);
+}
+
+document.getElementById('userInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// Init
+showWelcome();
+</script>
+</body>
+</html>
