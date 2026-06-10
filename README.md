@@ -2,183 +2,186 @@
 
 <div align="center">
 
-## 🤖 AI-Based College Information Assistant
+# 🤖 Campus Assistant Bot
 
-A modern and interactive chatbot designed to provide instant campus-related information to students, faculty, parents, and visitors.
+### AI-Based College Information Assistant
+
+A modern, responsive, and interactive chatbot designed to provide instant campus-related information to students, faculty, parents, and visitors.
+
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Open_Web_App-success?style=for-the-badge)](https://script.google.com/macros/s/AKfycbyOtQbFiRyzEHbeRxn4rN4BSQiG5XnYOoDet7-XN_iB/dev)
 
 ![Status](https://img.shields.io/badge/Status-Active-success)
 ![Platform](https://img.shields.io/badge/Platform-Web_App-blue)
-![Technology](https://img.shields.io/badge/Technology-Google_Apps_Script-orange)
+![Google Apps Script](https://img.shields.io/badge/Google_Apps_Script-Backend-orange)
 ![Responsive](https://img.shields.io/badge/Mobile-Friendly-brightgreen)
+![Version](https://img.shields.io/badge/Version-1.0-purple)
+
+### 🔗 Live Application
+
+**https://script.google.com/macros/s/AKfycbyOtQbFiRyzEHbeRxn4rN4BSQiG5XnYOoDet7-XN_iB/dev**
 
 </div>
 
 ---
 
-## ✨ Overview
+# 📖 Project Overview
 
-Campus Assistant Bot is a web-based college information chatbot developed using Google Apps Script, HTML, CSS, and JavaScript. The chatbot acts as a virtual campus assistant that provides instant responses to frequently asked questions regarding college services and facilities.
+Campus Assistant Bot is an AI-inspired college information chatbot developed using Google Apps Script, HTML, CSS, and JavaScript.
 
-The system helps users access information quickly without contacting the administration office.
-
----
-
-## 🎯 Objectives
-
-* Provide instant access to college information.
-* Reduce workload on administrative staff.
-* Improve student support and engagement.
-* Offer a user-friendly and responsive chatbot experience.
-* Deliver accurate responses for common campus queries.
-
----
-
-## 🚀 Features
-
-### ⚡ Quick Action Buttons
-
-One-click shortcuts for:
+The chatbot acts as a virtual campus help desk that provides instant answers regarding:
 
 * College Timings
-* Departments
-* Exams
-* Library
-* Placements
-* Contact Information
+* Academic Departments
+* Library Information
+* Examination Schedules
+* Placement Details
 * Admissions
-* Hostel Information
+* Hostel Facilities
 * Events
+* Contact Information
 
-### 🎴 Interactive Response Cards
-
-* Clean and structured information display
-* Easy-to-read card layouts
-* Icon-supported responses
-
-### 🔍 Keyword Recognition
-
-* Rule-based query matching
-* Fast response generation
-* Predefined response templates
-
-### 🛡️ Fallback Mechanism
-
-* Handles unsupported queries gracefully
-* Suggests supported topics
-* Improves user experience
-
-### 📱 Responsive Design
-
-* Desktop Compatible
-* Tablet Compatible
-* Mobile Friendly
-
-### 👍 Feedback System
-
-* Thumbs Up Rating
-* Thumbs Down Rating
-* User Satisfaction Tracking
-
-### ℹ️ College Information Panel
-
-Provides:
-
-* Office Timings
-* Contact Numbers
-* Location Information
-* Quick Links
+This system helps students and visitors access information quickly without requiring administrative assistance.
 
 ---
 
-## 👥 Target Users
+# 🌟 Key Features
 
-| User Type      | Purpose                            |
-| -------------- | ---------------------------------- |
-| Students       | Academic information and schedules |
-| New Admissions | Admission guidance                 |
-| Parents        | College details and facilities     |
-| Visitors       | Campus information                 |
-| Faculty        | Administrative references          |
+## ⚡ Quick Access Buttons
 
----
+One-click access to:
 
-## 🛠️ Technology Stack
-
-| Technology         | Purpose                  |
-| ------------------ | ------------------------ |
-| Google Apps Script | Backend & Hosting        |
-| HTML5              | Structure                |
-| CSS3               | Styling & Responsiveness |
-| JavaScript (ES6)   | Logic & Interactivity    |
-| Google Drive       | Storage & Documentation  |
+* 🕒 Timings
+* 🏫 Departments
+* 📚 Library
+* 📝 Exams
+* 💼 Placements
+* 🎓 Admissions
+* 🏠 Hostel
+* 📅 Events
+* 📞 Contact
 
 ---
 
-## 🔄 Conversation Flow
+## 🎴 Interactive Response Cards
 
-```text
-User Opens Chatbot
-        │
-        ▼
-Welcome Message Displayed
-        │
-        ▼
-User Enters Query
-        │
-        ▼
-Keyword Analysis
-        │
- ┌──────┴──────┐
- │             │
- ▼             ▼
-Match       No Match
-Found?      Found?
- │             │
- ▼             ▼
-Response     Fallback
-Card         Message
- │             │
- └──────┬──────┘
-        ▼
-Continue Conversation
+Beautiful card-based responses with:
+
+* Icons
+* Structured Layout
+* Easy Reading Format
+* Mobile Optimization
+
+---
+
+## 🔍 Smart Keyword Recognition
+
+The chatbot:
+
+* Detects keywords
+* Matches predefined intents
+* Generates accurate responses
+* Provides instant results
+
+---
+
+## 🛡️ Intelligent Fallback System
+
+If a query is unsupported:
+
+* User receives a friendly message
+* Supported topics are suggested
+* Conversation continues smoothly
+
+---
+
+## 📱 Fully Responsive Design
+
+Works perfectly on:
+
+* Desktop 💻
+* Tablet 📱
+* Mobile 📲
+
+---
+
+## 👍 User Feedback System
+
+Each response includes:
+
+* 👍 Helpful
+* 👎 Not Helpful
+
+for tracking user satisfaction.
+
+---
+
+# 👥 Target Users
+
+| User           | Purpose                   |
+| -------------- | ------------------------- |
+| Students       | Academic Information      |
+| Parents        | College Information       |
+| Faculty        | Administrative References |
+| Visitors       | Campus Guidance           |
+| New Admissions | Admission Support         |
+
+---
+
+# 🛠️ Technology Stack
+
+| Technology         | Purpose           |
+| ------------------ | ----------------- |
+| Google Apps Script | Backend & Hosting |
+| HTML5              | User Interface    |
+| CSS3               | Styling           |
+| JavaScript ES6     | Functionality     |
+| Google Drive       | Storage           |
+
+---
+
+# 🔄 Conversation Flow
+
+```mermaid
+flowchart TD
+
+A[Open Chatbot]
+--> B[Welcome Message]
+
+B --> C[User Enters Query]
+
+C --> D[Keyword Analysis]
+
+D --> E{Keyword Found?}
+
+E -->|Yes| F[Generate Response Card]
+
+E -->|No| G[Show Fallback Message]
+
+F --> H[Continue Conversation]
+
+G --> H
 ```
 
 ---
 
-## 📚 Supported Queries
+# 📸 Project Screenshots
 
-The chatbot can answer questions related to:
+## 🏠 Home Screen
 
-* 🕒 College Timings
-* 🏫 Departments
-* 📖 Library Information
-* 📝 Examination Schedule
-* 💼 Placement Information
-* 🎓 Admissions
-* 🏠 Hostel Facilities
-* 📅 Events
-* 📞 Contact Information
+* Welcome Message
+* Quick Access Cards
+* Interactive Buttons
 
----
-
-## 📸 Functional Demonstration
-
-### Home Screen
-
-* Welcome message
-* Quick-access cards
-* Shortcut buttons
-
-### Timings Query
+## 🕒 Timings Information
 
 Displays:
 
-* Monday–Saturday: 8:00 AM – 5:00 PM
-* Sunday: Closed
+* Monday – Saturday
+* 8:00 AM – 5:00 PM
 
-### Departments Information
+## 🏫 Departments Information
 
-Provides details of:
+Available Departments:
 
 * Computer Engineering
 * Information Technology
@@ -187,64 +190,50 @@ Provides details of:
 * Electronics & Telecommunication Engineering
 * First Year Engineering
 
-### Library Information
+## 📚 Library Information
 
-Shows:
+Features:
 
-* Working Hours
 * Reading Hall
 * E-Library
 * Digital Journals
-* Book Collection
+* 50,000+ Books
 
-### Placement Information
+## 💼 Placement Information
 
-Includes:
+Top Recruiters:
 
-* Top Recruiters
-* Average Package Statistics
+* TCS
+* Infosys
+* Wipro
+* Bosch
+* L&T
 
-### Contact Information
-
-Displays:
-
-* Office Contact
-* Admissions Contact
-* Official Email
+Average Package:
+**₹4.5 LPA**
 
 ---
 
-## 🏆 Results & Achievements
+# 📚 Supported Queries
 
-✅ Successfully deployed as a Google Apps Script Web Application
+The chatbot currently supports:
 
-✅ Accurate responses for all primary query categories
-
-✅ Responsive UI for desktop and mobile devices
-
-✅ Effective fallback mechanism for unsupported queries
-
-✅ Interactive information cards and quick actions
-
-✅ User feedback collection system
-
----
-
-## 🌟 Future Enhancements
-
-* AI-powered Natural Language Processing
-* Dialogflow Integration
-* Claude/OpenAI Integration
-* Real-Time Database Connectivity
-* Voice Assistant Support
-* Multilingual Support
-* Event Notifications
-* Analytics Dashboard
-* Smart Search System
+```text
+College Timings
+Departments
+Library
+Examinations
+Placements
+Admissions
+Hostel
+Events
+Contact Information
+Fees Information
+```
 
 ---
 
-## 📂 Project Structure
+# 📂 Project Structure
 
 ```text
 Campus-Assistant-Bot/
@@ -253,42 +242,92 @@ Campus-Assistant-Bot/
 ├── index.html
 ├── styles.css
 ├── script.js
+│
 ├── assets/
-│   ├── icons
-│   └── images
+│   ├── icons/
+│   └── images/
 │
 ├── screenshots/
 │
-└── README.md
+├── README.md
+│
+└── LICENSE
 ```
 
 ---
 
-## 💡 Key Benefits
+# 🚀 Deployment
 
-* Faster Information Access
-* Reduced Administrative Load
-* Improved User Experience
-* Mobile Accessibility
-* Easy Deployment
-* Scalable Architecture
+The application is deployed using Google Apps Script.
+
+### Live URL
+
+https://script.google.com/macros/s/AKfycbyOtQbFiRyzEHbeRxn4rN4BSQiG5XnYOoDet7-XN_iB/dev
 
 ---
 
-## 👨‍💻 Developed By
+# 🏆 Results & Achievements
 
-**Karan Lingayat**
+✅ Successfully deployed online
+
+✅ Accurate responses for all supported topics
+
+✅ Mobile Friendly Interface
+
+✅ Interactive User Experience
+
+✅ Fast Response Time
+
+✅ Structured Information Cards
+
+✅ User Feedback System
+
+✅ Always-Visible Information Panel
+
+---
+
+# 🔮 Future Scope
+
+Planned enhancements:
+
+* 🤖 AI Integration (OpenAI / Claude)
+* 🎤 Voice Assistant Support
+* 🌐 Multilingual Support
+* 📊 Analytics Dashboard
+* 🔔 Push Notifications
+* 🗄️ Database Integration
+* 📅 Dynamic Timetable Updates
+* 📢 Event Notifications
+
+---
+
+# 👨‍💻 Developer
+
+### Karan Lingayat
 
 Campus Assistant Bot Project
 
-Academic Year: 2024-2025
+Academic Year: 2024–2025
+
+---
+
+# 📞 Contact
+
+For project-related queries:
+
+📧 Email: [your-email@example.com](mailto:your-email@example.com)
+
+🌐 Live App:
+https://script.google.com/macros/s/AKfycbyOtQbFiRyzEHbeRxn4rN4BSQiG5XnYOoDet7-XN_iB/dev
 
 ---
 
 <div align="center">
 
-### ⭐ If you like this project, give it a Star on GitHub ⭐
+## ⭐ Star this Repository if you like the project ⭐
 
-Made with ❤️ using Google Apps Script, HTML, CSS & JavaScript
+### Made with ❤️ using Google Apps Script, HTML, CSS & JavaScript
+
+🚀 Happy Coding!
 
 </div>
