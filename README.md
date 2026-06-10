@@ -315,7 +315,7 @@ Academic Year: 2024–2025
 
 For project-related queries:
 
-📧 Email: [your-email@example.com](mailto:your-email@example.com)
+📧 Email: [karan942006@gmail.com](mailto:karan942006@gmail.com)
 
 🌐 Live App:
 https://script.google.com/macros/s/AKfycbyOtQbFiRyzEHbeRxn4rN4BSQiG5XnYOoDet7-XN_iB/dev
